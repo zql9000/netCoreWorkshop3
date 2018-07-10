@@ -25,12 +25,12 @@ namespace netCoreWorkshop
 				.UseConfiguration(commandLineConfig)
 				.ConfigureAppConfiguration((builderContext, config) =>
 				{
-				IHostingEnvironment env = builderContext.HostingEnvironment;
+					IHostingEnvironment env = builderContext.HostingEnvironment;
 
-				config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
-					.AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+					config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
+						.AddJsonFile($"appSettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-				config.AddEnvironmentVariables();
+					config.AddEnvironmentVariables();
 				})
 				.ConfigureLogging((hostingContext, logging) => { 
 					logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")); 

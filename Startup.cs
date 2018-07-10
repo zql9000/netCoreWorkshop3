@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using netCoreWorkshop.Business;
 
 namespace netCoreWorkshop
 {
@@ -21,6 +22,7 @@ namespace netCoreWorkshop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IArticlesService, ArticlesService>();
             services.AddMvc();
         }
 

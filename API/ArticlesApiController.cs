@@ -2,27 +2,31 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using netCoreWorkshop.Entities;
+using netCoreWorkshop.Business;
 
 namespace netCoreWorkshop.API
 {
     [Route("/api/articles")]
     public class ArticlesApiController : Controller
     {
+        private readonly IArticlesService articlesService;
+
+        public ArticlesApiController(IArticlesService articlesService)
+        {
+            this.articlesService = articlesService;
+        }
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var article = Article.DataSource.Where(a => a.Id == id).FirstOrDefault();
-
-            if (article == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(Article.DataSource.Single(a => a.Id == id));
+            return Ok(articlesService.GetOneArticle(id));
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(Article.DataSource);
+        public IActionResult Get()
+        {
+            return Ok(articlesService.GetAllArticles());
+        }
 
         [HttpPost]
         public IActionResult Create([FromBody]Article article)
@@ -32,7 +36,7 @@ namespace netCoreWorkshop.API
                 return BadRequest(ModelState);
             }
 
-            Article.DataSource.Add(new Article { Title = article.Title, Id = Article.DataSource.Count() });
+            articlesService.AddArticle(article);
 
             return CreatedAtAction(nameof(Create), new { id = article.Title }, article);
         }
@@ -51,14 +55,7 @@ namespace netCoreWorkshop.API
                 return BadRequest(ModelState);
             }
 
-            var currentArticle = Article.DataSource.Where(m => m.Id == id).FirstOrDefault();
-
-            if (currentArticle == null)
-            {
-                return NotFound();
-            }
-
-            currentArticle.Title = article.Title;
+            articlesService.EditArticle(article);
             
             return NoContent();
         }
@@ -66,14 +63,7 @@ namespace netCoreWorkshop.API
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var article = Article.DataSource.Where(m => m.Id == id).FirstOrDefault();
-
-            if (article == null)
-            {
-                return NotFound();
-            }
-
-            Article.DataSource.Remove(article);
+            articlesService.DeleteArticle(id);
 
             return NoContent();
         }

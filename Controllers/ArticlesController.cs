@@ -2,15 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using netCoreWorkshop.Entities;
+using netCoreWorkshop.Business;
 
 namespace netCoreWorkshop.Controllers
 {
     public class ArticlesController : Controller
     {
+        private readonly IArticlesService articlesService;
+                
+        public ArticlesController(IArticlesService articlesService)
+        {
+            this.articlesService = articlesService;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
-            return View(Article.DataSource);
+            return View(articlesService.GetAllArticles());
         }
 
         [HttpGet]
@@ -24,8 +32,7 @@ namespace netCoreWorkshop.Controllers
         {
             if (ModelState.IsValid)
             {
-                article.Id = Article.DataSource.Count() + 1;
-                Article.DataSource.Add(article);
+                articlesService.AddArticle(article);
                 return RedirectToAction("Index");
             }
 
